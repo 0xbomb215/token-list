@@ -7,10 +7,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      secrets: read
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v4
         with:
           go-version: '^1.17.3'
 
@@ -21,6 +25,7 @@ jobs:
 
       - run: ~/automerge -v=1 -setRemoteForCI
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_APP_PEM: "${{ secrets.TL_APP_PEM }}"
 
       - run: git config user.name "token-list-automerger[bot]" && git config user.email "94544671+token-list-automerger[bot]@users.noreply.github.com"
